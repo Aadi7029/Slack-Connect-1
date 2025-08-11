@@ -75,7 +75,7 @@ app.get('/auth/slack/callback', async (req: Request, res: Response) => {
     stmt.run(teamId, accessToken, refreshToken);
     
     // Redirect user to the frontend, indicating success
-    res.redirect(`${process.env.FRONTEND_URL}/success?team_id=${teamId}`);
+    res.redirect(`${process.env.FRONTEND_URL}/?team_id=${teamId}`);
 
   } catch (error) {
     console.error('Error during OAuth callback:', error);
