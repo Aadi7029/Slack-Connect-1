@@ -4,7 +4,7 @@ A full-stack application that enables users to connect their Slack workspace, se
 **Live Demo:** https://slack-connect-1-7dne.vercel.app/
 
 **Working Demo:**
-![Demo](assets/Demo for Slack.mp4)
+![Demo](assets/Demo for Slack.gif)
 
 
 ## ✨ Core Features
