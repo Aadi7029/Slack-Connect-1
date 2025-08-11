@@ -1,5 +1,5 @@
 // backend/src/index.ts
-// Forcing a redeploy to reset the database
+// Forcing a redeploy to reset the database because we are using a temporary database here
 import express, { Request, Response } from 'express';
 import { WebClient } from '@slack/web-api';
 import cron from 'node-cron';
@@ -201,7 +201,7 @@ app.delete('/api/messages/scheduled/:id', (req: Request, res: Response) => {
 
 // --- CRON JOB FOR SCHEDULER ---
 // This job runs every minute to check for and send scheduled messages.
-// This series of statement has been commented out knowingly bceause it was causing an issue with the backend render deployment
+
 
 cron.schedule('* * * * *', async () => {
   console.log('Running cron job to send scheduled messages...');
