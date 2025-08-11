@@ -1,9 +1,5 @@
-// Forcing a redeploy to reset the database
-import express, { Request, Response } from 'express';
-
-
 // backend/src/index.ts
-
+// Forcing a redeploy to reset the database
 import express, { Request, Response } from 'express';
 import { WebClient } from '@slack/web-api';
 import cron from 'node-cron';
@@ -33,7 +29,7 @@ initializeDatabase();
 
 // 1. Redirect to Slack's authorization page
 app.get('/auth/slack', (req: Request, res: Response) => {
-  const scopes = ['chat:write', 'channels:read', 'users:read'];
+  const scopes = ['chat:write', 'channels:read', 'groups:read', 'users:read'];
   const redirectUri = `${process.env.BACKEND_URL}/auth/slack/callback`;
 
   const authUrl = `https://slack.com/oauth/v2/authorize?client_id=${process.env.SLACK_CLIENT_ID}&scope=${scopes.join(',')}&redirect_uri=${encodeURIComponent(redirectUri)}`;
@@ -65,7 +61,6 @@ app.get('/auth/slack/callback', async (req: Request, res: Response) => {
     }
 
     const teamId = tokenResponse.team.id;
-    // **FIXED LINE:** Get the access token from the top-level response object
     const accessToken = tokenResponse.access_token; 
     const refreshToken = "dummy_refresh_token"; // Placeholder
 
@@ -78,7 +73,7 @@ app.get('/auth/slack/callback', async (req: Request, res: Response) => {
     const stmt = db.prepare('INSERT INTO workspaces (team_id, access_token, refresh_token) VALUES (?, ?, ?) ON CONFLICT(team_id) DO UPDATE SET access_token = excluded.access_token, refresh_token = excluded.refresh_token');
     stmt.run(teamId, accessToken, refreshToken);
     
-    // Redirect user to the frontend, indicating success
+    // Redirect user to the frontend homepage
     res.redirect(`${process.env.FRONTEND_URL}/?team_id=${teamId}`);
 
   } catch (error) {
@@ -90,7 +85,7 @@ app.get('/auth/slack/callback', async (req: Request, res: Response) => {
 
 // --- API ENDPOINTS ---
 
-// Get a list of public channels for a given team
+// Get a list of public and private channels for a given team
 app.get('/api/channels', async (req: Request, res: Response) => {
     const teamId = req.query.team_id as string;
     if (!teamId) {
@@ -105,8 +100,9 @@ app.get('/api/channels', async (req: Request, res: Response) => {
         
         const slackClient = new WebClient(row.access_token);
         const result = await slackClient.conversations.list({
-            types: 'public_channel',
-            limit: 200 // Adjust as needed
+            // **FIXED LINE:** Ask for both public and private channels
+            types: 'public_channel,private_channel',
+            limit: 200
         });
 
         res.json(result.channels);
@@ -198,7 +194,6 @@ app.delete('/api/messages/scheduled/:id', (req: Request, res: Response) => {
 
 // --- CRON JOB FOR SCHEDULER ---
 // This job runs every minute to check for and send scheduled messages.
-/*
 cron.schedule('* * * * *', async () => {
   console.log('Running cron job to send scheduled messages...');
   const now = Math.floor(Date.now() / 1000);
@@ -236,7 +231,6 @@ cron.schedule('* * * * *', async () => {
     console.error('Cron job error:', error);
   }
 });
-*/
 
 
 // --- START SERVER ---
