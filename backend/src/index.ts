@@ -16,8 +16,8 @@ const port = process.env.PORT || 8080; // Use Render's port or default to 8080
 const client = new WebClient();
 
 // --- MIDDLEWARE ---
-// Enable CORS for your frontend to communicate with the backend
-app.use(cors({ origin: process.env.FRONTEND_URL || 'http://localhost:5173' })); 
+// **FIXED LINE:** Allow requests from any origin for debugging
+app.use(cors()); 
 // Parse JSON bodies from incoming requests
 app.use(express.json());
 
@@ -201,6 +201,7 @@ app.delete('/api/messages/scheduled/:id', (req: Request, res: Response) => {
 
 // --- CRON JOB FOR SCHEDULER ---
 // This job runs every minute to check for and send scheduled messages.
+/*
 cron.schedule('* * * * *', async () => {
   console.log('Running cron job to send scheduled messages...');
   const now = Math.floor(Date.now() / 1000);
@@ -238,7 +239,7 @@ cron.schedule('* * * * *', async () => {
     console.error('Cron job error:', error);
   }
 });
-
+*/
 
 // --- START SERVER ---
 app.listen(port, () => {
