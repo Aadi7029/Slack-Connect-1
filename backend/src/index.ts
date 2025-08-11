@@ -88,26 +88,33 @@ app.get('/auth/slack/callback', async (req: Request, res: Response) => {
 // Get a list of public and private channels for a given team
 app.get('/api/channels', async (req: Request, res: Response) => {
     const teamId = req.query.team_id as string;
+    console.log(`[DEBUG] Received request for channels with Team ID: ${teamId}`);
+
     if (!teamId) {
         return res.status(400).json({ error: 'Team ID is required.' });
     }
 
     try {
         const row: any = db.prepare('SELECT access_token FROM workspaces WHERE team_id = ?').get(teamId);
-        if (!row) {
-            return res.status(404).json({ error: 'Workspace not found. Please re-authenticate.' });
+        if (!row || !row.access_token) {
+            console.error(`[DEBUG] No access token found in database for Team ID: ${teamId}`);
+            return res.status(404).json({ error: 'Workspace not found or token missing. Please re-authenticate.' });
         }
+        
+        console.log(`[DEBUG] Found access token for Team ID ${teamId}. Token starts with: ${row.access_token.substring(0, 10)}...`);
         
         const slackClient = new WebClient(row.access_token);
         const result = await slackClient.conversations.list({
-            // **FIXED LINE:** Ask for both public and private channels
             types: 'public_channel,private_channel',
             limit: 200
         });
 
+        console.log(`[DEBUG] Successfully fetched ${result.channels?.length} channels.`);
         res.json(result.channels);
+
     } catch (error) {
-        console.error('Error fetching channels:', error);
+        // **ADDED DETAILED LOGGING:** This will show the exact error from Slack.
+        console.error('[DEBUG] Full error from slackClient.conversations.list:', JSON.stringify(error, null, 2));
         res.status(500).json({ error: 'Failed to fetch channels.' });
     }
 });
