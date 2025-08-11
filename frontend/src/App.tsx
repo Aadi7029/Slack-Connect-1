@@ -1,6 +1,6 @@
 // frontend/src/App.tsx
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import './App.css'; // We'll add some basic styling
 
