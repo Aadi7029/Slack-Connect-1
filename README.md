@@ -3,8 +3,9 @@ A full-stack application that enables users to connect their Slack workspace, se
 
 **Live Demo:** https://slack-connect-1-7dne.vercel.app/
 
-**Working Video:**
-<video src="https://github.com/Aadi7029/Slack-Connect-1/raw/refs/heads/main/assets/Demo%20for%20Slack%20.mp4" controls="controls" style="max-width: 720px;"></video>
+**Working Demo:**
+![Demo](assets/Demo for Slack.mp4)
+
 
 ## ✨ Core Features
 - **Secure Slack Authentication:** Implements the complete OAuth 2.0 flow to securely connect a user's Slack workspace.
