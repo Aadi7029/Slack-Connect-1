@@ -48,6 +48,10 @@ The backend uses **node-cron** to run a job every minute. This job queries the d
 
 ## 📸 Screenshots
 
+![Startup Screen](<assets/Start Screen.png>)
+![Dashboard](assets/Dashboard.png)
+![Schedule Message](<assets/Slack Schedule.png>)
+![Slack Screenshot](assets/Slack.png)
 
 ## ⚙️ Setup and Installation (Local Development)
 
