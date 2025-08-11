@@ -55,17 +55,20 @@ app.get('/auth/slack/callback', async (req: Request, res: Response) => {
       redirect_uri: redirectUri,
     });
 
-    if (!tokenResponse.ok || !tokenResponse.authed_user || !tokenResponse.team) {
+    if (!tokenResponse.ok || !tokenResponse.team) {
       console.error('Slack OAuth Error:', tokenResponse.error);
       return res.status(500).send(`Slack API error: ${tokenResponse.error}`);
     }
 
     const teamId = tokenResponse.team.id;
-    const accessToken = tokenResponse.authed_user.access_token;
-    // Note: Slack's oauth.v2.access does not provide a refresh token by default.
-    // To get a refresh token, you must configure token rotation in your Slack App settings.
-    // For this assignment, we'll proceed assuming we have the access token.
+    // **FIXED LINE:** Get the access token from the top-level response object
+    const accessToken = tokenResponse.access_token; 
     const refreshToken = "dummy_refresh_token"; // Placeholder
+
+    if (!accessToken) {
+        console.error('Access Token was not received from Slack.');
+        return res.status(500).send('Authentication failed: No access token provided by Slack.');
+    }
 
     // Store or update the token in the database
     const stmt = db.prepare('INSERT INTO workspaces (team_id, access_token, refresh_token) VALUES (?, ?, ?) ON CONFLICT(team_id) DO UPDATE SET access_token = excluded.access_token, refresh_token = excluded.refresh_token');
