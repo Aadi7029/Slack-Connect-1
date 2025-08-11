@@ -4,7 +4,7 @@ A full-stack application that enables users to connect their Slack workspace, se
 **Live Demo:** https://slack-connect-1-7dne.vercel.app/
 
 **Working Demo:**
-[🎥 Watch Demo](https://drive.google.com/file/d/FILE_ID/preview)
+[🎥 Watch Demo](https://drive.google.com/file/d/1Reo_12raRDtv4Vchk_fKio_XNngbMKfM/preview)
 
 
 
@@ -45,6 +45,9 @@ The application is designed with a modern, decoupled architecture, separating th
 
 ### Scheduling Mechanism
 The backend uses **node-cron** to run a job every minute. This job queries the database for any messages whose `send_at` timestamp is in the past and whose status is `pending`. For each message found, it uses the corresponding workspace's access token to post the message to Slack and then updates the message's status to `sent` to prevent duplicates.
+
+## 📸 Screenshots
+
 
 ## ⚙️ Setup and Installation (Local Development)
 
