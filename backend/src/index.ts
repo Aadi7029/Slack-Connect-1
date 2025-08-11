@@ -194,6 +194,7 @@ app.delete('/api/messages/scheduled/:id', (req: Request, res: Response) => {
 
 // --- CRON JOB FOR SCHEDULER ---
 // This job runs every minute to check for and send scheduled messages.
+/*
 cron.schedule('* * * * *', async () => {
   console.log('Running cron job to send scheduled messages...');
   const now = Math.floor(Date.now() / 1000);
@@ -231,6 +232,7 @@ cron.schedule('* * * * *', async () => {
     console.error('Cron job error:', error);
   }
 });
+*/
 
 
 // --- START SERVER ---
